@@ -9,7 +9,9 @@
 /coverage
 
 # production
+.gitignore
 /build
+/server
 *.log
 .env
 

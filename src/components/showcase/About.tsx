@@ -67,25 +67,24 @@ const About: React.FC<AboutProps> = (props) => {
                         Mohammad Ibrahim
                     </a>
                     . We worked on many projects together, including chat bots,
-                    multiple game projects, apps, and more. One of these
-                    projects is viewable on my{' '}
-                    <Link to="/projects/software">Software Projects</Link> page.
+                    multiple CRM projects, apps, and more.
                 </p>
                 <br />
                 <p>
-                    In 2017, I got accepted into Rennselear Polytechnic
-                    Institute to study Computer Science. It was my first choice
-                    and I was absolutely ecstatic to be going to such a great
-                    university. At the end of my sophomore year, I got an
-                    internship working for the startup Hover, primarily focusing
-                    on frontend work. I continued to work at Hover on and off
-                    for about a year and a half, until the start of my senior
-                    year when I decided to focus on other opportunities.
+                    In 2017, I graduated from high school and made the decision
+                    to pursue programming through self-learning. Rather than
+                    taking the traditional university route, I immersed myself
+                    in online resources, particularly YouTube tutorials and
+                    coding websites. This self-directed approach allowed me to
+                    focus on the specific technologies I was passionate about
+                    and learn at my own pace. Through dedication and countless
+                    hours of practice, I was able to build a strong foundation
+                    in programming and web development.
                 </p>
                 <br />
                 <br />
-                <div style={{}}>
-                    <div
+                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                    {/* <div
                         style={{
                             flex: 1,
                             textAlign: 'justify',
@@ -114,7 +113,7 @@ const About: React.FC<AboutProps> = (props) => {
                             the chapter. I met a lot of amazing people through
                             my fraternity and thoroughly enjoyed the community.
                         </p>
-                    </div>
+                    </div> */}
                     <div style={styles.verticalImage}>
                         <img src={meNow} style={styles.image} alt="" />
                         <p>

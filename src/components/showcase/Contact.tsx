@@ -15,6 +15,23 @@ const validateEmail = (email: string) => {
     return re.test(String(email).toLowerCase());
 };
 
+// function to generate random math problem
+const generateMathProblem = () => {
+    const num1 = Math.floor(Math.random() * 10) + 1;
+    const num2 = Math.floor(Math.random() * 10) + 1;
+    const operators = ['+', '-'];
+    const operator = operators[Math.floor(Math.random() * operators.length)];
+    let answer;
+    
+    if (operator === '+') {
+        answer = num1 + num2;
+    } else {
+        answer = num1 - num2;
+    }
+    
+    return { problem: `${num1} ${operator} ${num2} = ?`, answer };
+};
+
 interface SocialBoxProps {
     icon: string;
     link: string;
@@ -39,6 +56,9 @@ const Contact: React.FC<ContactProps> = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [formMessage, setFormMessage] = useState('');
     const [formMessageColor, setFormMessageColor] = useState('');
+    const [mathProblem, setMathProblem] = useState(generateMathProblem());
+    const [verificationAnswer, setVerificationAnswer] = useState('');
+    const [isVerificationValid, setIsVerificationValid] = useState(false);
 
     useEffect(() => {
         if (validateEmail(email) && name.length > 0 && message.length > 0) {
@@ -48,16 +68,31 @@ const Contact: React.FC<ContactProps> = (props) => {
         }
     }, [email, name, message]);
 
+    useEffect(() => {
+        if (verificationAnswer === mathProblem.answer.toString()) {
+            setIsVerificationValid(true);
+        } else {
+            setIsVerificationValid(false);
+        }
+    }, [verificationAnswer, mathProblem.answer]);
+
     async function submitForm() {
         if (!isFormValid) {
             setFormMessage('Form unable to validate, please try again.');
             setFormMessageColor('red');
             return;
         }
+
+        if (!isVerificationValid) {
+            setFormMessage('Please solve the verification problem correctly.');
+            setFormMessageColor('red');
+            return;
+        }
+
         try {
             setIsLoading(true);
             const res = await fetch(
-                'https://api.maxshishkin.com/api/contact',
+                `${process.env.REACT_APP_API_URL || 'http://localhost:3001'}/api/contact`,
                 {
                     method: 'POST',
                     headers: {
@@ -84,6 +119,8 @@ const Contact: React.FC<ContactProps> = (props) => {
                 setEmail('');
                 setName('');
                 setMessage('');
+                setVerificationAnswer('');
+                setMathProblem(generateMathProblem());
                 setFormMessageColor(colors.blue);
                 setIsLoading(false);
             } else {
@@ -200,12 +237,24 @@ const Contact: React.FC<ContactProps> = (props) => {
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                     />
+                    <label>
+                        <p>
+                            <b>Verification: {mathProblem.problem}</b>
+                        </p>
+                    </label>
+                    <input
+                        style={styles.formItem}
+                        type="number"
+                        placeholder="Enter the answer"
+                        value={verificationAnswer}
+                        onChange={(e) => setVerificationAnswer(e.target.value)}
+                    />
                     <div style={styles.buttons}>
                         <button
                             className="site-button"
                             style={styles.button}
                             type="submit"
-                            disabled={!isFormValid || isLoading}
+                            disabled={!isFormValid || isLoading || !isVerificationValid}
                             onMouseDown={submitForm}
                         >
                             {!isLoading ? (
@@ -269,7 +318,6 @@ const styles: StyleSheetCSS = {
     },
     formInfo: {
         textAlign: 'right',
-
         flexDirection: 'column',
         alignItems: 'flex-end',
         paddingLeft: 24,
@@ -293,8 +341,6 @@ const styles: StyleSheetCSS = {
     social: {
         width: 4,
         height: 4,
-        // borderRadius: 1000,
-
         justifyContent: 'center',
         alignItems: 'center',
         marginLeft: 8,
